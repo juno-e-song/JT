@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JUNO TAROT</title>
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    min-height: 100vh;
+    background:
+      radial-gradient(ellipse at top, #2a1858 0%, #0d0620 50%, #000 100%);
+    color: #f3e9d2;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      radial-gradient(1px 1px at 20% 30%, #fff, transparent),
+      radial-gradient(1px 1px at 60% 70%, #ffd, transparent),
+      radial-gradient(1.5px 1.5px at 80% 10%, #fff, transparent),
+      radial-gradient(1px 1px at 40% 80%, #ffecc8, transparent),
+      radial-gradient(1px 1px at 90% 50%, #fff, transparent),
+      radial-gradient(1.5px 1.5px at 10% 60%, #fff, transparent),
+      radial-gradient(1px 1px at 30% 15%, #ffd, transparent),
+      radial-gradient(1px 1px at 70% 40%, #fff, transparent);
+    background-size: 800px 800px;
+    opacity: 0.6;
+    animation: twinkle 5s infinite alternate;
+    pointer-events: none;
+    z-index: 0;
+  }
+  @keyframes twinkle {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 0.8; }
+  }
+
+  .container {
+    position: relative;
+    z-index: 1;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px 20px 80px;
+    text-align: center;
+  }
+
+  h1 {
+    font-family: 'Pretendard', sans-serif;
+    font-size: 3.2rem;
+    letter-spacing: 0.25em;
+    background: linear-gradient(90deg, #e7c77a, #fff4c8, #e7c77a);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow: 0 0 30px rgba(231, 199, 122, 0.3);
+    margin-bottom: 4px;
+    font-weight: 800;
+  }
+  input, button, h1, h2, h3, p, div, span, label, small {
+    font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  }
+  .subtitle {
+    color: #b8a6d4;
+    letter-spacing: 0.4em;
+    font-size: 0.85rem;
+    margin-bottom: 8px;
+  }
+  .tagline {
+    color: #8a7aa0;
+    font-size: 0.8rem;
+    margin-bottom: 24px;
+    letter-spacing: 0.1em;
+  }
+
+  .question-box {
+    background: rgba(30, 15, 60, 0.5);
+    border: 1px solid rgba(231, 199, 122, 0.4);
+    border-radius: 10px;
+    padding: 16px;
+    margin: 0 auto 24px;
+    max-width: 600px;
+    backdrop-filter: blur(4px);
+  }
+  .question-box label {
+    display: block;
+    margin-bottom: 8px;
+    color: #e7c77a;
+    font-size: 0.95rem;
+  }
+  .question-box input {
+    width: 100%;
+    padding: 10px 14px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(231, 199, 122, 0.3);
+    border-radius: 6px;
+    color: #f3e9d2;
+    font-family: inherit;
+    font-size: 1rem;
+  }
+  .question-box input:focus {
+    outline: none;
+    border-color: #e7c77a;
+    box-shadow: 0 0 10px rgba(231, 199, 122, 0.3);
+  }
+
+  .btn {
+    background: linear-gradient(135deg, #6b46c1, #4c1d95);
+    color: #f3e9d2;
+    border: 1px solid rgba(231, 199, 122, 0.6);
+    padding: 14px 36px;
+    font-size: 1.1rem;
+    font-family: inherit;
+    letter-spacing: 0.1em;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin: 8px;
+    box-shadow: 0 4px 15px rgba(107, 70, 193, 0.4);
+  }
+  .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(231, 199, 122, 0.5);
+    background: linear-gradient(135deg, #7c3aed, #5b21b6);
+  }
+  .btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  .spread {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin: 40px 0;
+    flex-wrap: wrap;
+    min-height: 340px;
+  }
+
+  .card-slot {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 200px;
+  }
+
+  .card-label {
+    font-size: 1rem;
+    color: #e7c77a;
+    letter-spacing: 0.25em;
+    margin-bottom: 12px;
+    opacity: 0.9;
+  }
+  .card-label small {
+    display: block;
+    color: #8a7aa0;
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    margin-top: 2px;
+  }
+
+  .card {
+    width: 190px;
+    height: 320px;
+    position: relative;
+    cursor: pointer;
+    perspective: 1200px;
+  }
+
+  .card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.9s cubic-bezier(0.4, 0.2, 0.2, 1);
+    -webkit-transform-style: preserve-3d;
+    transform-style: preserve-3d;
+  }
+  .card.no-transition .card-inner {
+    transition: none !important;
+  }
+
+  .card.flipped .card-inner {
+    transform: rotateY(180deg);
+  }
+
+  .card-face {
+    position: absolute;
+    inset: 0;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow:
+      0 10px 30px rgba(0, 0, 0, 0.5),
+      0 0 20px rgba(107, 70, 193, 0.3);
+  }
+
+  /* 카드 뒷면 */
+  .card-back {
+    background:
+      linear-gradient(135deg, #1a0a3e 0%, #3d1a78 50%, #1a0a3e 100%);
+    border: 3px solid #e7c77a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .card-back::before {
+    content: '';
+    position: absolute;
+    inset: 8px;
+    border: 1px solid rgba(231, 199, 122, 0.5);
+    border-radius: 6px;
+  }
+  .card-back-symbol {
+    width: 90px;
+    height: 90px;
+    background: radial-gradient(circle, #e7c77a 0%, #9a7a3a 70%);
+    border-radius: 50%;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 25px rgba(231, 199, 122, 0.6);
+  }
+  .card-back-symbol::before {
+    content: '✦';
+    font-size: 3.2rem;
+    color: #1a0a3e;
+  }
+  .card-back-symbol::after {
+    content: '';
+    position: absolute;
+    inset: -22px;
+    border: 1px dashed rgba(231, 199, 122, 0.5);
+    border-radius: 50%;
+    animation: rotate 20s linear infinite;
+  }
+  @keyframes rotate {
+    to { transform: rotate(360deg); }
+  }
+
+  /* 카드 앞면 - 이미지 기반 */
+  .card-front {
+    background: #f5ecd2;
+    -webkit-transform: rotateY(180deg);
+    transform: rotateY(180deg);
+    border: 3px solid #4c1d95;
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+  }
+  .card-front.reversed .card-img-wrap {
+    transform: rotate(180deg);
+  }
+  .card-img-wrap {
+    flex: 1;
+    width: 100%;
+    height: 100%;
+    background: #f5ecd2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+  }
+  .card-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+  }
+  /* 이미지 로드 실패 시 폴백 */
+  .card-img-fallback {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(160deg, #f9e8b0, #e7c77a, #c79e50);
+    color: #2a1858;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 10px;
+  }
+  .card-img-fallback .n { font-size: 0.75rem; font-weight: bold; color: #4c1d95; }
+  .card-img-fallback .sym { font-size: 4rem; }
+  .card-img-fallback .nm { font-size: 0.95rem; font-weight: bold; border-top: 1px solid #4c1d95; padding-top: 6px; width: 100%; text-align: center; line-height: 1.2; }
+
+  .card.appearing {
+    animation: dealIn 0.6s ease-out;
+  }
+  @keyframes dealIn {
+    from { opacity: 0; transform: translateY(-100px) rotate(-10deg) scale(0.8); }
+    to { opacity: 1; transform: translateY(0) rotate(0) scale(1); }
+  }
+
+  .readings {
+    margin-top: 40px;
+    display: grid;
+    gap: 20px;
+  }
+  .reading-card {
+    background: rgba(30, 15, 60, 0.6);
+    border: 1px solid rgba(231, 199, 122, 0.3);
+    border-radius: 12px;
+    padding: 24px;
+    text-align: left;
+    backdrop-filter: blur(6px);
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeUp 0.6s forwards;
+  }
+  .reading-card:nth-child(1) { animation-delay: 0.2s; }
+  .reading-card:nth-child(2) { animation-delay: 0.4s; }
+  .reading-card:nth-child(3) { animation-delay: 0.6s; }
+  .reading-card:nth-child(4) { animation-delay: 0.8s; }
+  @keyframes fadeUp {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .reading-position {
+    color: #e7c77a;
+    letter-spacing: 0.25em;
+    font-size: 0.8rem;
+    margin-bottom: 8px;
+  }
+  .reading-title {
+    font-size: 1.4rem;
+    color: #fff;
+    margin-bottom: 4px;
+  }
+  .reading-orientation {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 10px;
+    font-size: 0.75rem;
+    margin-bottom: 12px;
+    letter-spacing: 0.1em;
+  }
+  .reading-orientation.upright {
+    background: rgba(76, 175, 80, 0.25);
+    color: #81e8a4;
+    border: 1px solid #81e8a4;
+  }
+  .reading-orientation.reversed {
+    background: rgba(220, 83, 83, 0.25);
+    color: #ff9b9b;
+    border: 1px solid #ff9b9b;
+  }
+  .reading-keywords {
+    color: #c4b5e0;
+    font-size: 0.92rem;
+    margin-bottom: 10px;
+    font-style: italic;
+  }
+  .reading-text {
+    color: #e3d7c3;
+    line-height: 1.75;
+    font-size: 0.98rem;
+  }
+
+  .summary-card {
+    background: linear-gradient(135deg, rgba(107, 70, 193, 0.4), rgba(76, 29, 149, 0.4));
+    border: 1px solid #e7c77a;
+  }
+  .summary-card .reading-title {
+    color: #e7c77a;
+  }
+
+  .hidden { display: none !important; }
+
+  @media (max-width: 700px) {
+    h1 { font-size: 2.2rem; letter-spacing: 0.15em; }
+    .card { width: 145px; height: 245px; }
+    .spread { gap: 15px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>JUNO TAROT</h1>
+  <div class="subtitle">RIDER · WAITE · SMITH</div>
+  <div class="tagline">과거 — 현재 — 미래 · 쓰리 카드 스프레드</div>
+
+  <div class="question-box">
+    <label for="question">마음속 질문을 적어 주세요 (선택)</label>
+    <input type="text" id="question" placeholder="예: 지금 진행 중인 이 일을 계속해도 될까?" maxlength="100">
+  </div>
+
+  <div>
+    <button class="btn" id="drawBtn">카드 뽑기</button>
+    <button class="btn hidden" id="resetBtn">다시 뽑기</button>
+  </div>
+
+  <div class="spread" id="spread">
+    <div class="card-slot">
+      <div class="card-label">과거<small>PAST</small></div>
+      <div class="card" data-index="0">
+        <div class="card-inner">
+          <div class="card-face card-back"><div class="card-back-symbol"></div></div>
+          <div class="card-face card-front"></div>
+        </div>
+      </div>
+    </div>
+    <div class="card-slot">
+      <div class="card-label">현재<small>PRESENT</small></div>
+      <div class="card" data-index="1">
+        <div class="card-inner">
+          <div class="card-face card-back"><div class="card-back-symbol"></div></div>
+          <div class="card-face card-front"></div>
+        </div>
+      </div>
+    </div>
+    <div class="card-slot">
+      <div class="card-label">미래<small>FUTURE</small></div>
+      <div class="card" data-index="2">
+        <div class="card-inner">
+          <div class="card-face card-back"><div class="card-back-symbol"></div></div>
+          <div class="card-face card-front"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="readings" id="readings"></div>
+</div>
+
+<script>
+// ============ 이미지 URL 생성기 (Wikimedia Commons - Rider-Waite-Smith, Public Domain) ============
+const IMG_BASE = "https://commons.wikimedia.org/wiki/Special:FilePath/";
+function imgUrl(filename) {
+  return IMG_BASE + encodeURIComponent(filename) + "?width=400";
+}
+
+// ============ 메이저 아르카나 22장 (Rider-Waite 표준 해석 · 직설적 톤) ============
+const MAJOR = [
+  { n: "0", name: "바보", en: "The Fool", file: "RWS_Tarot_00_Fool.jpg", symbol: "🌼",
+    up: { kw: "새로운 시작 · 모험 · 순수한 신뢰",
+          t: "새 출발이다. 망설이지 말고 떠나라. 지금은 경험이 없는 게 오히려 무기다. 너무 재고 계산하면 기회를 놓친다." },
+    rv: { kw: "무모함 · 준비 부족 · 어리석은 선택",
+          t: "지금 뛰어들면 다친다. 준비가 덜 됐다는 걸 스스로 안다. 현실 감각을 되찾아라." } },
+  { n: "I", name: "마법사", en: "The Magician", file: "RWS_Tarot_01_Magician.jpg", symbol: "✨",
+    up: { kw: "의지 · 실행력 · 자원의 집중",
+          t: "원하는 걸 이룰 수단을 이미 다 갖고 있다. 핑계 대지 말고 실행해라. 집중하면 지금 바로 된다." },
+    rv: { kw: "기만 · 능력 낭비 · 미숙함",
+          t: "재능을 엉뚱한 곳에 쓰고 있거나, 남의 말에 현혹되고 있다. 스스로를 속이지 마라." } },
+  { n: "II", name: "여사제", en: "The High Priestess", file: "RWS_Tarot_02_High_Priestess.jpg", symbol: "🌙",
+    up: { kw: "직관 · 비밀 · 아직 말할 때가 아님",
+          t: "지금은 움직이지 말고 지켜봐라. 조용히 관찰하면 답이 나온다. 말을 아껴야 얻는다." },
+    rv: { kw: "직관 무시 · 숨겨진 의도 · 정보 부족",
+          t: "뭔가 이상한 느낌이 드는데 애써 무시하고 있다. 직감을 믿어라. 숨겨진 사실이 곧 드러난다." } },
+  { n: "III", name: "여황제", en: "The Empress", file: "RWS_Tarot_03_Empress.jpg", symbol: "🌿",
+    up: { kw: "풍요 · 창조 · 관계의 성장",
+          t: "결과가 풍성하게 나올 시기다. 관계·프로젝트·몸 상태 모두 잘 자란다. 누리고 돌봐라." },
+    rv: { kw: "정체 · 자기 소홀 · 창조성 고갈",
+          t: "자기 자신을 뒷전으로 미뤘다. 먼저 챙기지 않으면 아무것도 키워낼 수 없다." } },
+  { n: "IV", name: "황제", en: "The Emperor", file: "RWS_Tarot_04_Emperor.jpg", symbol: "👑",
+    up: { kw: "권위 · 규율 · 안정된 구조",
+          t: "질서와 규칙이 답이다. 감정으로 밀어붙이지 말고 체계적으로 움직여라. 책임지는 자리에 서라." },
+    rv: { kw: "독단 · 경직 · 통제력 상실",
+          t: "고집 때문에 손해 보고 있다. 한 번 내 방식이 틀릴 수도 있다는 걸 인정해라." } },
+  { n: "V", name: "교황", en: "The Hierophant", file: "RWS_Tarot_05_Hierophant.jpg", symbol: "⛪",
+    up: { kw: "전통 · 제도 · 검증된 길",
+          t: "정석대로 가라. 튀는 방법보다 기본기와 전통이 먹힌다. 멘토·선배에게 조언을 구해라." },
+    rv: { kw: "관습 거부 · 위선 · 자기만의 길",
+          t: "기존 틀이 더 이상 안 맞는다. 형식을 깨라. 단, 결과에 대한 책임은 본인 몫이다." } },
+  { n: "VI", name: "연인", en: "The Lovers", file: "RWS_Tarot_06_Lovers.jpg", symbol: "💞",
+    up: { kw: "사랑 · 중요한 선택 · 가치관 일치",
+          t: "진심에 맞는 선택을 해야 한다. 둘 중 하나는 포기해야 한다. 가치관과 일치하는 쪽을 골라라." },
+    rv: { kw: "불화 · 잘못된 선택 · 유혹",
+          t: "지금 관계나 선택이 어긋나 있다. 단기 쾌락에 흔들리면 길게 후회한다." } },
+  { n: "VII", name: "전차", en: "The Chariot", file: "RWS_Tarot_07_Chariot.jpg", symbol: "🏛️",
+    up: { kw: "의지력 · 승리 · 빠른 진전",
+          t: "밀어붙이면 이긴다. 감정과 충동을 통제하고 목표 하나에만 집중해라. 속도를 내라." },
+    rv: { kw: "방향 상실 · 통제 불능 · 공격성",
+          t: "방향도 없이 세게만 달리고 있다. 멈추고 목적지부터 다시 정해라." } },
+  { n: "VIII", name: "힘", en: "Strength", file: "RWS_Tarot_08_Strength.jpg", symbol: "🦁",
+    up: { kw: "용기 · 자제력 · 부드러운 지배",
+          t: "힘으로 누르지 말고 꾸준함과 차분함으로 이겨라. 네 안의 사자는 길들일 수 있다." },
+    rv: { kw: "자기의심 · 감정 폭주 · 약함",
+          t: "자기 자신을 못 믿고 있다. 두려움이 판단을 흐린다. 작은 성공부터 다시 쌓아라." } },
+  { n: "IX", name: "은둔자", en: "The Hermit", file: "RWS_Tarot_09_Hermit.jpg", symbol: "🕯️",
+    up: { kw: "성찰 · 혼자만의 시간 · 내면의 빛",
+          t: "혼자 있는 시간이 필요하다. 남들 말을 끄고 스스로 답을 찾아라. 진짜 중요한 건 안에 있다." },
+    rv: { kw: "고립 · 회피 · 외로움",
+          t: "너무 오래 혼자 있었다. 이제는 세상으로 나와야 한다. 안 그러면 답도 멈춘다." } },
+  { n: "X", name: "운명의 수레바퀴", en: "Wheel of Fortune", file: "RWS_Tarot_10_Wheel_of_Fortune.jpg", symbol: "🎡",
+    up: { kw: "전환점 · 행운의 변화 · 사이클",
+          t: "흐름이 바뀐다. 지금 상황은 오래 가지 않는다. 좋은 쪽으로 기회가 오니 놓치지 마라." },
+    rv: { kw: "불운 · 반복 · 저항",
+          t: "같은 실수를 계속하고 있다. 패턴을 끊지 않으면 상황은 안 바뀐다." } },
+  { n: "XI", name: "정의", en: "Justice", file: "RWS_Tarot_11_Justice.jpg", symbol: "⚖️",
+    up: { kw: "공정 · 진실 · 인과응보",
+          t: "뿌린 대로 거둔다. 네가 옳았다면 결국 증명된다. 반대로 잘못이 있다면 책임져야 한다." },
+    rv: { kw: "불공정 · 책임 회피 · 부정직",
+          t: "지금 판단이 한쪽으로 기울어 있다. 자기 합리화를 멈추고 사실을 직시해라." } },
+  { n: "XII", name: "매달린 사람", en: "The Hanged Man", file: "RWS_Tarot_12_Hanged_Man.jpg", symbol: "🙃",
+    up: { kw: "관점 전환 · 희생 · 잠시 멈춤",
+          t: "지금은 밀고 가면 안 된다. 관점을 뒤집어 봐라. 포기하는 게 아니라 다르게 보는 거다." },
+    rv: { kw: "무의미한 희생 · 정체 · 고집",
+          t: "의미 없는 희생을 계속하고 있다. 매달려서 얻는 게 없다면 내려와라." } },
+  { n: "XIII", name: "죽음", en: "Death", file: "RWS_Tarot_13_Death.jpg", symbol: "🦋",
+    up: { kw: "끝 · 변화 · 재탄생",
+          t: "끝내야 할 걸 끝내야 한다. 관계·일·습관 중 뭐든 끝나야 새로 시작된다. 애도는 짧게." },
+    rv: { kw: "변화 거부 · 미련 · 정체",
+          t: "이미 끝난 걸 붙잡고 있다. 놓아야 할 때다. 이러다 진짜 기회까지 놓친다." } },
+  { n: "XIV", name: "절제", en: "Temperance", file: "RWS_Tarot_14_Temperance.jpg", symbol: "🧪",
+    up: { kw: "균형 · 중용 · 인내",
+          t: "극단으로 치닫지 말고 중간을 잡아라. 섞고 기다리면 좋은 결과가 나온다. 무리하면 망친다." },
+    rv: { kw: "불균형 · 과잉 · 조급함",
+          t: "어느 한쪽에 너무 쏠렸다. 일·관계·건강 중 어디가 무너지고 있는지 점검해라." } },
+  { n: "XV", name: "악마", en: "The Devil", file: "RWS_Tarot_15_Devil.jpg", symbol: "🔗",
+    up: { kw: "집착 · 중독 · 물질적 구속",
+          t: "벗어나야 할 걸 알면서 못 벗어나고 있다. 사슬은 네가 스스로 찬 거다. 끊을 수 있다." },
+    rv: { kw: "해방 · 자각 · 속박에서 벗어남",
+          t: "오래된 나쁜 패턴에서 빠져나오는 중이다. 한 번 더 결단하면 완전히 끊을 수 있다." } },
+  { n: "XVI", name: "탑", en: "The Tower", file: "RWS_Tarot_16_Tower.jpg", symbol: "⚡",
+    up: { kw: "갑작스러운 붕괴 · 진실 폭로 · 충격",
+          t: "기반이 무너진다. 피할 수 없다. 그러나 거짓 위에 세운 거라 어차피 무너질 거였다. 다시 지어라." },
+    rv: { kw: "붕괴 회피 · 두려움 · 지연된 충격",
+          t: "터질 걸 알면서 막으려고 하고 있다. 더 미루면 손실만 커진다. 지금 인정해라." } },
+  { n: "XVII", name: "별", en: "The Star", file: "RWS_Tarot_17_Star.jpg", symbol: "⭐",
+    up: { kw: "희망 · 치유 · 영감",
+          t: "고비는 지나갔다. 회복이 시작된다. 꿈과 목표를 다시 정하고 나아가라. 운이 따라준다." },
+    rv: { kw: "낙담 · 신뢰 상실 · 방향 상실",
+          t: "희망을 놓았다. 그러나 네가 생각하는 만큼 바닥은 아니다. 작은 목표 하나부터 다시 세워라." } },
+  { n: "XVIII", name: "달", en: "The Moon", file: "RWS_Tarot_18_Moon.jpg", symbol: "🌕",
+    up: { kw: "혼란 · 불안 · 착각",
+          t: "지금 보는 게 전부가 아니다. 오해·착각·두려움이 판단을 흐린다. 당장 큰 결정을 내리지 마라." },
+    rv: { kw: "진실 드러남 · 혼란 해소 · 안정",
+          t: "안개가 걷힌다. 숨어있던 게 드러나며 상황이 정리된다. 이제 움직여도 된다." } },
+  { n: "XIX", name: "태양", en: "The Sun", file: "RWS_Tarot_19_Sun.jpg", symbol: "☀️",
+    up: { kw: "성공 · 기쁨 · 활력",
+          t: "잘 된다. 숨기지 말고 성과를 드러내라. 자신감을 가져도 되는 시기다. 최고의 결과다." },
+    rv: { kw: "일시적 흐림 · 과신 · 성공 지연",
+          t: "좋은 일이 있지만 잠깐 가려져 있다. 자만하지 말고 마무리에 더 신경 써라." } },
+  { n: "XX", name: "심판", en: "Judgement", file: "RWS_Tarot_20_Judgement.jpg", symbol: "📯",
+    up: { kw: "부활 · 각성 · 결정적 부름",
+          t: "이제 결정할 때다. 지난 일을 정리하고 답을 내라. 큰 기회나 소명이 다가오고 있다." },
+    rv: { kw: "자책 · 망설임 · 과거에 묶임",
+          t: "지난 일로 자기 자신을 계속 벌주고 있다. 이미 끝난 일이다. 이제 놓아줘라." } },
+  { n: "XXI", name: "세계", en: "The World", file: "RWS_Tarot_21_World.jpg", symbol: "🌍",
+    up: { kw: "완성 · 성취 · 통합",
+          t: "한 단계가 끝난다. 이룬 것에 자부심을 가져라. 다음 단계로 올라가도 된다." },
+    rv: { kw: "미완성 · 마무리 지연 · 아쉬움",
+          t: "거의 다 왔는데 마지막을 못 맺고 있다. 그 한 조각을 끝내야 다음이 열린다." } }
+];
+
+// ============ 마이너 아르카나 56장 (Rider-Waite 표준 · 직설적 톤) ============
+const SUIT_SYMBOLS = { Wands: "🔥", Cups: "💧", Swords: "⚔️", Pentacles: "🪙" };
+const SUIT_KR = { Wands: "완드", Cups: "컵", Swords: "소드", Pentacles: "펜타클" };
+// 마이너 이미지 파일명 - Rank 1~14 (1=Ace, 11=Page, 12=Knight, 13=Queen, 14=King)
+const SUIT_FILE_PREFIX = { Wands: "Wands", Cups: "Cups", Swords: "Swords", Pentacles: "Pents" };
+
+const PIP = {
+  Wands: {
+    "Ace":  { up: { kw: "새 프로젝트 · 의욕 · 불씨", t: "새로 시작할 때다. 영감이 떠오르면 바로 실행해라. 미루면 꺼진다." },
+              rv: { kw: "의욕 상실 · 시작 지연", t: "시작도 못 하고 에너지가 빠지고 있다. 원인부터 찾아라." } },
+    "2":    { up: { kw: "계획 · 선택 · 주도권", t: "미래를 설계할 시기. 두 가지 선택 중 더 큰 그림을 가진 쪽을 골라라." },
+              rv: { kw: "우유부단 · 안전지대", t: "결정 미루면 둘 다 놓친다. 편한 쪽만 찾다가는 제자리다." } },
+    "3":    { up: { kw: "확장 · 기회 · 전망", t: "준비한 게 결과로 돌아올 시기. 시야를 더 넓혀라. 해외·외부 기회도 본다." },
+              rv: { kw: "지연 · 계획 차질", t: "예상대로 안 풀린다. 계획을 수정해라. 고집부리면 더 늦는다." } },
+    "4":    { up: { kw: "축하 · 안정 · 성취의 이정표", t: "한 단계 이뤘다. 결혼·이사·이직 등 축하할 일이 생긴다. 누려라." },
+              rv: { kw: "불안정 · 축하 지연", t: "아직 축하할 단계가 아니다. 기반을 더 다진 후에 얘기해라." } },
+    "5":    { up: { kw: "경쟁 · 마찰 · 소란", t: "충돌이 있다. 그러나 치명적이지 않다. 부딪히면서 실력이 는다." },
+              rv: { kw: "갈등 회피 · 내부 불화", t: "갈등을 계속 덮으면 곪는다. 대화로 풀어라." } },
+    "6":    { up: { kw: "승리 · 인정 · 주목", t: "성과가 공개된다. 당당히 받아들여라. 리더로 인정받는다." },
+              rv: { kw: "자만 · 인정 부족", t: "공을 혼자 차지하려다 반감 산다. 나누면 더 커진다." } },
+    "7":    { up: { kw: "방어 · 도전 · 우위 유지", t: "사방에서 공격이 오지만 네가 유리한 위치다. 포지션만 지키면 이긴다." },
+              rv: { kw: "압박 · 포기 직전", t: "버티기 힘들어도 지금 놓으면 다 날아간다. 조금만 더." } },
+    "8":    { up: { kw: "빠른 진행 · 소식 · 속도", f: "", t: "일이 한꺼번에 움직인다. 소식·연락·이동이 빠르게 온다. 집중해서 올라타라." },
+              rv: { kw: "지연 · 혼란", t: "급하게 처리하다 실수 난다. 속도를 늦춰라." } },
+    "9":    { up: { kw: "끈기 · 경계 · 마지막 방어", t: "피곤해도 한 번만 더 버텨라. 곧 끝난다. 경계를 늦추지 마라." },
+              rv: { kw: "번아웃 · 방어적 고립", t: "이미 소진됐다. 모든 걸 적으로 보지 마라. 잠시 내려놔라." } },
+    "10":   { up: { kw: "과부하 · 책임의 무게 · 완주 직전", t: "너무 많이 짊어지고 있다. 결승선이 가까워도 일부는 내려놔라." },
+              rv: { kw: "짐 내려놓기 · 회복", t: "드디어 무게를 줄이고 있다. 필요 없던 걸 덜어내라." } },
+    "Page": { up: { kw: "호기심 · 새로운 시도 · 소식", t: "새 아이디어나 제안이 온다. 작게 실험해 봐라." },
+              rv: { kw: "산만함 · 미성숙", t: "관심이 너무 많이 흩어져 있다. 하나만 골라 끝까지 해라." } },
+    "Knight":{ up: { kw: "행동력 · 모험 · 돌진", t: "바로 움직여라. 다만 브레이크는 남겨둬라. 너무 질주하면 사고 난다." },
+              rv: { kw: "충동 · 성급함 · 중도 포기", t: "시작만 해놓고 끝을 못 맺는다. 하나는 반드시 마무리해라." } },
+    "Queen":{ up: { kw: "카리스마 · 자신감 · 열정", t: "존재감으로 주도하는 시기. 적극적으로 움직이면 성과 나온다." },
+              rv: { kw: "질투 · 소진 · 자기중심", t: "관심받고 싶은 마음이 너무 강해졌다. 한 발 물러서라." } },
+    "King": { up: { kw: "비전 · 리더십 · 결단", t: "큰 그림을 그리고 주도해라. 사람들이 네 결정을 기다린다." },
+              rv: { kw: "독선 · 권위주의", t: "힘으로 밀어붙이면 사람들이 떠난다. 의견을 들어라." } }
+  },
+  Cups: {
+    "Ace":  { up: { kw: "새로운 감정 · 사랑의 시작 · 감정의 문", t: "마음이 열린다. 새로운 관계나 감정이 시작된다. 솔직하게 받아들여라." },
+              rv: { kw: "막힌 감정 · 공허", t: "감정을 억누르고 있다. 표현해야 흐른다. 안 그러면 고인다." } },
+    "2":    { up: { kw: "연결 · 파트너십 · 합의", t: "관계가 잘 맞는다. 계약·협업·연애 모두 긍정적이다. 서로 존중하라." },
+              rv: { kw: "불화 · 오해 · 거리감", t: "서로 기대가 어긋나고 있다. 대화 없이는 안 풀린다." } },
+    "3":    { up: { kw: "축하 · 우정 · 공동체", t: "모임·축하·공유의 시간. 혼자가 아니라 함께해야 빛난다." },
+              rv: { kw: "과잉 사교 · 피상적 관계", t: "모임은 많은데 공허하다. 진짜 친한 사람 한 명에 집중해라." } },
+    "4":    { up: { kw: "권태 · 무관심 · 재평가", t: "있는 것에 흥미를 잃었다. 배부른 소리인지, 진짜 안 맞는 건지 구분해라." },
+              rv: { kw: "각성 · 새 기회 발견", t: "놓칠 뻔했던 기회가 다시 보인다. 이번엔 잡아라." } },
+    "5":    { up: { kw: "상실 · 후회 · 슬픔", t: "잃은 게 있다. 슬퍼해도 된다. 그러나 남은 것도 보라. 전부 잃은 건 아니다." },
+              rv: { kw: "회복 · 용서 · 전진", t: "과거 상처를 정리하는 중이다. 자신부터 용서해라." } },
+    "6":    { up: { kw: "추억 · 과거의 인연 · 향수", t: "과거 인연이 다시 연결된다. 어린 시절의 순수함을 회복하라." },
+              rv: { kw: "과거 집착 · 미련", t: "이미 지나간 일에 매달려 있다. 지금을 살아라." } },
+    "7":    { up: { kw: "환상 · 선택지 과잉 · 꿈", t: "선택지가 많아 보이지만 대부분 환상이다. 실체 있는 것 하나만 골라라." },
+              rv: { kw: "명료함 · 결단", t: "드디어 진짜 원하는 게 뚜렷해진다. 결정하고 움직여라." } },
+    "8":    { up: { kw: "떠남 · 의미 찾기 · 전환", t: "눈앞의 성취를 두고 떠나야 할 때. 의미 없는 것에 머물지 마라." },
+              rv: { kw: "미련 · 망설임", t: "떠나야 한다는 걸 알면서 못 떠나고 있다. 결단해라." } },
+    "9":    { up: { kw: "만족 · 소원 성취 · 자족", t: "원하던 걸 얻는다. 감사하게 누려라. 단, 안주하면 거기까지다." },
+              rv: { kw: "겉만 만족 · 탐닉", t: "물질은 채웠는데 속이 허하다. 진짜 갈증이 뭔지 봐라." } },
+    "10":   { up: { kw: "가정의 행복 · 정서적 완성", t: "가족·친밀한 관계에서 안정이 온다. 지금 이 평범한 행복이 목표 그 자체다." },
+              rv: { kw: "가정 불화 · 이상과 현실 격차", t: "겉으로 괜찮아 보이는 관계가 삐걱댄다. 진솔하게 대화해라." } },
+    "Page": { up: { kw: "영감 · 감정적 설렘 · 메시지", t: "설레는 제안이나 감정이 온다. 순수하게 반응해도 된다." },
+              rv: { kw: "감정 미성숙 · 회피", t: "감정을 제대로 표현 못 하고 있다. 어색해도 말해라." } },
+    "Knight":{ up: { kw: "낭만 · 제안 · 이끌림", t: "마음을 움직이는 제안이 온다. 단, 환상과 현실을 구분해라." },
+              rv: { kw: "변덕 · 과도한 이상화", t: "상대를 실제보다 부풀려 보고 있다. 현실을 봐라." } },
+    "Queen":{ up: { kw: "공감 · 직관 · 포용", t: "감정을 읽는 능력이 뛰어나다. 주변 사람들도 돌봐라. 단, 자기부터 챙겨라." },
+              rv: { kw: "감정 의존 · 소진", t: "남의 감정에 너무 끌려다닌다. 선을 그어라." } },
+    "King": { up: { kw: "정서적 성숙 · 균형 · 조언", t: "감정을 다스릴 줄 안다. 주변의 감정을 중재하는 역할을 맡아라." },
+              rv: { kw: "감정 억압 · 조작", t: "감정을 안 드러내는 게 능사가 아니다. 쌓이면 터진다." } }
+  },
+  Swords: {
+    "Ace":  { up: { kw: "명료함 · 진실 · 돌파구", t: "답이 명확해진다. 결단의 순간이다. 머뭇거리지 말고 말하고 결정해라." },
+              rv: { kw: "혼란 · 오판", t: "확실하지 않은 정보로 판단하려고 한다. 한 번 더 확인해라." } },
+    "2":    { up: { kw: "결정 유예 · 교착 · 눈가림", t: "결정을 미루고 있다. 둘 다 싫어도 하나는 골라야 한다." },
+              rv: { kw: "진실 직면 · 정체 해소", t: "외면하던 진실을 드디어 본다. 불편해도 그게 시작이다." } },
+    "3":    { up: { kw: "이별 · 상처 · 배신", t: "아프다. 이별·배신·실망 중 하나가 현실이 된다. 울어도 된다. 흘려보내야 낫는다." },
+              rv: { kw: "회복 · 상처 아물기", t: "아픔이 줄어들고 있다. 자기연민은 이제 충분하다." } },
+    "4":    { up: { kw: "휴식 · 회복 · 묵상", t: "강제로라도 쉬어라. 계속 밀고 가면 무너진다. 쉬는 것도 전략이다." },
+              rv: { kw: "재개 · 조급한 복귀", t: "완전히 회복되기 전에 움직이려 한다. 조금만 더 쉬어라." } },
+    "5":    { up: { kw: "갈등 · 자존심 싸움 · 이겨도 쓸쓸함", t: "이겨도 남는 게 없는 싸움이다. 한 발 물러서는 게 이기는 거다." },
+              rv: { kw: "화해 · 갈등 종식", t: "먼저 손 내밀어라. 자존심 세우다 다 잃는다." } },
+    "6":    { up: { kw: "이동 · 전환 · 안정 회복", t: "거친 시기를 지나 잔잔한 곳으로 간다. 물리적·심리적 이동이 답이다." },
+              rv: { kw: "발이 묶임 · 떠나지 못함", t: "이미 끝난 자리에 머물고 있다. 떠나야 새 게 온다." } },
+    "7":    { up: { kw: "전략 · 은밀함 · 꾀", t: "정면 승부보다 전략적으로 움직여라. 다만 선을 넘으면 부메랑이다." },
+              rv: { kw: "정직으로 회귀 · 노출", t: "속임수가 통하지 않는다. 솔직함으로 돌아가라." } },
+    "8":    { up: { kw: "자기 제한 · 갇힘 · 무력감", t: "갇힌 느낌은 네가 만든 거다. 눈가리개는 풀 수 있다. 한 발만 움직여라." },
+              rv: { kw: "해방 · 자각", t: "속박에서 빠져나오는 중이다. 자신이 약하지 않음을 알았다." } },
+    "9":    { up: { kw: "불안 · 걱정 · 불면", t: "실제보다 머릿속에서 더 크게 키우고 있다. 걱정은 생각의 습관일 뿐이다." },
+              rv: { kw: "회복 · 악몽의 끝", t: "가장 힘든 시기는 지나갔다. 새벽이 가깝다." } },
+    "10":   { up: { kw: "바닥 · 끝 · 고통의 절정", t: "더 나빠질 수 없는 지점이다. 즉, 이제 올라갈 일만 남았다. 받아들여라." },
+              rv: { kw: "재기 · 느린 회복", t: "다시 일어서는 중이다. 서두르지 말고 천천히." } },
+    "Page": { up: { kw: "호기심 · 정보 · 날카로운 관찰", t: "정보 수집의 시간. 날카로운 질문을 던져라. 단, 말은 조심해라." },
+              rv: { kw: "뒷말 · 성급한 판단", t: "확인도 안 하고 말하고 있다. 후회한다." } },
+    "Knight":{ up: { kw: "돌진 · 확신 · 속도", t: "목표를 향해 곧장 달린다. 멈추지 말고 끝까지 가라." },
+              rv: { kw: "성급함 · 공격성", t: "속도가 지나쳐 주변을 다치게 한다. 잠시 멈춰라." } },
+    "Queen":{ up: { kw: "명료한 사고 · 객관성 · 독립", t: "감정 빼고 사실만 봐라. 지금 너의 판단이 가장 냉정하고 정확하다." },
+              rv: { kw: "냉정함 · 비판적", t: "너무 차갑다. 감정도 데이터의 일부다." } },
+    "King": { up: { kw: "지성 · 원칙 · 공정한 판단", t: "원칙대로 밀어라. 감정에 휘둘리면 질 판단이다." },
+              rv: { kw: "차가운 비판 · 권위적", t: "이성의 칼을 관계에까지 휘두르고 있다. 상처 남는다." } }
+  },
+  Pentacles: {
+    "Ace":  { up: { kw: "기회 · 돈의 시작 · 물질적 가능성", t: "돈이나 일의 구체적 기회가 온다. 놓치지 마라. 씨앗을 심을 타이밍이다." },
+              rv: { kw: "기회 놓침 · 불안정한 시작", t: "준비가 덜 된 제안이다. 혹하지 말고 따져라." } },
+    "2":    { up: { kw: "저글링 · 유연성 · 균형", t: "여러 일을 동시에 돌리는 시기. 지금은 리듬이 맞는다. 유지해라." },
+              rv: { kw: "과부하 · 균형 상실", t: "너무 많은 걸 쥐고 있다. 하나 놓아도 안 망한다." } },
+    "3":    { up: { kw: "협업 · 숙련 · 인정", t: "팀·조직에서 역할을 제대로 해내면 인정받는다. 배워라." },
+              rv: { kw: "미숙 · 협력 부족", t: "혼자 다 하려 한다. 도움 요청이 약함이 아니다." } },
+    "4":    { up: { kw: "소유 · 안정 · 지키기", t: "지금까지 번 것 지키는 게 우선. 큰 모험은 지금 말고." },
+              rv: { kw: "집착 · 인색 · 불안", t: "움켜쥐기만 해서는 안 는다. 투자든 나눔이든 풀어야 한다." } },
+    "5":    { up: { kw: "경제적 어려움 · 외로움 · 소외", t: "경제적·정서적으로 힘든 시기. 그러나 도움의 문은 열려 있다. 자존심 내려놔라." },
+              rv: { kw: "회복 · 상황 호전", t: "힘든 시기의 끝이 보인다. 경제적·정서적 회복이 시작된다." } },
+    "6":    { up: { kw: "나눔 · 관대함 · 공정한 거래", t: "주고받음이 공정한 시기. 받을 도움은 받고, 줄 건 주어라." },
+              rv: { kw: "불평등 · 이용당함 · 빚", t: "관계가 한쪽으로만 흐르고 있다. 조건을 다시 협상해라." } },
+    "7":    { up: { kw: "인내 · 중간 평가 · 장기 투자", t: "지금은 수확 전 점검 시기. 계속 갈지 바꿀지 지금 결정해라." },
+              rv: { kw: "성과 부족 · 조급함", t: "결과가 안 나와도 뿌리는 자라고 있다. 조금만 더 기다려라." } },
+    "8":    { up: { kw: "숙련 · 장인 정신 · 꾸준함", t: "반복과 디테일이 답이다. 오늘의 지루한 훈련이 내일의 실력이다." },
+              rv: { kw: "매너리즘 · 지루함", t: "기계적으로 반복만 한다. 방식에 변화를 줘라." } },
+    "9":    { up: { kw: "자립 · 풍요 · 혼자서도 충만", t: "스스로 이룬 결과를 누릴 때. 자립은 외로움이 아니라 자유다." },
+              rv: { kw: "고립 · 재정 문제", t: "자립이 고립이 됐다. 필요하면 도움 청해라." } },
+    "10":   { up: { kw: "유산 · 안정 · 가족의 풍요", t: "장기적 안정이 자리 잡는다. 가족·자산·시스템 모두 튼튼하다." },
+              rv: { kw: "재산 분쟁 · 가족 갈등", t: "돈 문제가 관계를 건드린다. 명확하게 선을 그어라." } },
+    "Page": { up: { kw: "학습 · 새 기회 · 성실", t: "새로 배울 게 생긴다. 기초부터 제대로 쌓아라. 지금 투자한 시간이 복리로 돌아온다." },
+              rv: { kw: "게으름 · 기회 회피", t: "배우기를 미루고 있다. 미룬 만큼 뒤처진다." } },
+    "Knight":{ up: { kw: "성실 · 신뢰 · 꾸준함", t: "튀지 않지만 가장 믿을 만한 결과가 나온다. 꾸준히만 해라." },
+              rv: { kw: "정체 · 고집", t: "안전한 루틴이 네 발전을 막고 있다. 변화를 받아들여라." } },
+    "Queen":{ up: { kw: "풍요 · 현실적 돌봄 · 안정감", t: "주변을 풍요롭게 만드는 힘이 있다. 단, 자기 자신도 그 풍요에 포함시켜라." },
+              rv: { kw: "자기 소홀 · 물질 의존", t: "남 챙기다 자기를 잊었다. 먼저 네 것부터." } },
+    "King": { up: { kw: "성취 · 재정적 성공 · 리더십", t: "물질적 성공이 현실이 된다. 누리되, 사람을 잊지 마라." },
+              rv: { kw: "탐욕 · 물질 집착", t: "더 가져도 불안하다. 문제는 액수가 아니라 관점이다." } }
+  }
+};
+
+// 마이너 덱 생성
+function buildMinor() {
+  const ranks = ["Ace","2","3","4","5","6","7","8","9","10","Page","Knight","Queen","King"];
+  const krRanks = { "Ace":"에이스","2":"2","3":"3","4":"4","5":"5","6":"6","7":"7","8":"8","9":"9","10":"10","Page":"페이지","Knight":"나이트","Queen":"퀸","King":"킹" };
+  const fileNum = { "Ace":"01","2":"02","3":"03","4":"04","5":"05","6":"06","7":"07","8":"08","9":"09","10":"10","Page":"11","Knight":"12","Queen":"13","King":"14" };
+  const deck = [];
+  for (const suit of Object.keys(PIP)) {
+    for (const r of ranks) {
+      const pip = PIP[suit][r];
+      const prefix = SUIT_FILE_PREFIX[suit];
+      deck.push({
+        n: r === "Ace" ? "A" : (r.length <= 2 ? r : r[0]),
+        name: `${SUIT_KR[suit]}의 ${krRanks[r]}`,
+        en: `${r} of ${suit}`,
+        symbol: SUIT_SYMBOLS[suit],
+        file: `${prefix}${fileNum[r]}.jpg`,
+        up: pip.up,
+        rv: pip.rv,
+        suit: suit
+      });
+    }
+  }
+  return deck;
+}
+
+const DECK = [...MAJOR, ...buildMinor()];
+
+// ============ 로직 ============
+const drawBtn = document.getElementById('drawBtn');
+const resetBtn = document.getElementById('resetBtn');
+const readingsEl = document.getElementById('readings');
+const cardEls = document.querySelectorAll('.card');
+const questionEl = document.getElementById('question');
+
+const POSITIONS = [
+  { title: "과거", eng: "PAST",    hint: "지금의 상황을 만든 흐름" },
+  { title: "현재", eng: "PRESENT", hint: "지금 이 순간의 에너지" },
+  { title: "미래", eng: "FUTURE",  hint: "이대로 가면 향할 방향" }
+];
+
+let drawnCards = [];
+let flippedCount = 0;
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function drawThree() {
+  const shuffled = shuffle(DECK);
+  return shuffled.slice(0, 3).map(c => ({
+    ...c,
+    reversed: Math.random() < 0.4  // 역방향 40%
+  }));
+}
+
+function renderCardFront(cardEl, card) {
+  const front = cardEl.querySelector('.card-front');
+  front.innerHTML = `
+    <div class="card-img-wrap">
+      <img class="card-img"
+           src="${imgUrl(card.file)}"
+           alt="${card.en}"
+           onerror="this.outerHTML='<div class=&quot;card-img-fallback&quot;><div class=&quot;n&quot;>${card.n}</div><div class=&quot;sym&quot;>${card.symbol}</div><div class=&quot;nm&quot;>${card.name}<br><span style=&quot;font-size:0.7rem;color:#6b46c1;&quot;>${card.en}</span></div></div>'">
+    </div>
+  `;
+  if (card.reversed) {
+    front.classList.add('reversed');
+  } else {
+    front.classList.remove('reversed');
+  }
+}
+
+function renderReadings(cards, question) {
+  readingsEl.innerHTML = '';
+
+  cards.forEach((card, i) => {
+    const pos = POSITIONS[i];
+    const meaning = card.reversed ? card.rv : card.up;
+    const div = document.createElement('div');
+    div.className = 'reading-card';
+    div.innerHTML = `
+      <div class="reading-position">${pos.title} · ${pos.eng} — ${pos.hint}</div>
+      <div class="reading-title">${card.symbol} ${card.name} <span style="color:#b8a6d4; font-size:0.9rem;">(${card.en})</span></div>
+      <div class="reading-orientation ${card.reversed ? 'reversed' : 'upright'}">
+        ${card.reversed ? '역방향 (Reversed)' : '정방향 (Upright)'}
+      </div>
+      <div class="reading-keywords">${meaning.kw}</div>
+      <div class="reading-text">${meaning.t}</div>
+    `;
+    readingsEl.appendChild(div);
+  });
+
+  // 종합
+  const summary = document.createElement('div');
+  summary.className = 'reading-card summary-card';
+  summary.innerHTML = `
+    <div class="reading-position">종합 · SYNTHESIS</div>
+    <div class="reading-title">✦ 세 장이 함께 전하는 메시지</div>
+    <div class="reading-text">
+      ${question ? `<strong>질문:</strong> <em>"${question}"</em><br><br>` : ''}
+      <strong>${cards[0].name}</strong>(${cards[0].reversed ? '역' : '정'})의 흐름에서 출발해,
+      <strong>${cards[1].name}</strong>(${cards[1].reversed ? '역' : '정'})의 상황을 지나,
+      <strong>${cards[2].name}</strong>(${cards[2].reversed ? '역' : '정'})의 결말로 간다.<br><br>
+      지금 상태를 그대로 두면 세 번째 카드의 방향으로 흐른다. 그 결과가 마음에 들지 않는다면,
+      현재 카드가 가리키는 부분을 바꿔야 미래가 바뀐다. 카드는 고정된 운명이 아니라 현재의 흐름을 비춘다.
+    </div>
+  `;
+  readingsEl.appendChild(summary);
+}
+
+function onCardClick(e) {
+  const cardEl = e.currentTarget;
+  if (cardEl.classList.contains('flipped')) return;
+  const idx = parseInt(cardEl.dataset.index);
+  if (!drawnCards[idx]) return;
+
+  cardEl.classList.add('flipped');
+  flippedCount++;
+
+  if (flippedCount === 3) {
+    setTimeout(() => {
+      renderReadings(drawnCards, questionEl.value.trim());
+      resetBtn.classList.remove('hidden');
+    }, 700);
+  }
+}
+
+function startDraw() {
+  drawnCards = drawThree();
+  flippedCount = 0;
+  readingsEl.innerHTML = '';
+  drawBtn.classList.add('hidden');
+  resetBtn.classList.add('hidden');
+
+  // 1) 애니메이션 없이 즉시 뒷면 상태로 초기화 (이전 카드가 잠깐 보이는 깜빡임 방지)
+  cardEls.forEach(cardEl => {
+    cardEl.classList.add('no-transition');
+    cardEl.classList.remove('flipped', 'appearing');
+  });
+  // 강제 리플로우
+  void cardEls[0].offsetWidth;
+
+  // 2) 뒷면이 보이는 상태에서 앞면 내용 교체
+  cardEls.forEach((cardEl, i) => {
+    renderCardFront(cardEl, drawnCards[i]);
+  });
+
+  // 3) 전환 효과 복구 후 등장 애니메이션
+  requestAnimationFrame(() => {
+    cardEls.forEach(cardEl => cardEl.classList.remove('no-transition'));
+    cardEls.forEach((cardEl, i) => {
+      setTimeout(() => { cardEl.classList.add('appearing'); }, i * 200);
+    });
+  });
+
+  setTimeout(() => {
+    if (!readingsEl.innerHTML) {
+      const guide = document.createElement('div');
+      guide.className = 'reading-card';
+      guide.style.textAlign = 'center';
+      guide.innerHTML = `
+        <div class="reading-text" style="color:#e7c77a;">
+          ✦ 숨을 깊이 쉬고, 카드를 하나씩 클릭해 뒤집어라 ✦
+        </div>
+      `;
+      readingsEl.appendChild(guide);
+    }
+  }, 700);
+}
+
+function reset() {
+  // 즉시 뒷면으로 되돌려 잔상이 보이지 않도록 함
+  cardEls.forEach(c => {
+    c.classList.add('no-transition');
+    c.classList.remove('flipped', 'appearing');
+  });
+  void cardEls[0].offsetWidth;
+  requestAnimationFrame(() => {
+    cardEls.forEach(c => c.classList.remove('no-transition'));
+  });
+  drawnCards = [];
+  flippedCount = 0;
+  readingsEl.innerHTML = '';
+  drawBtn.classList.remove('hidden');
+  resetBtn.classList.add('hidden');
+}
+
+drawBtn.addEventListener('click', startDraw);
+resetBtn.addEventListener('click', reset);
+cardEls.forEach(c => c.addEventListener('click', onCardClick));
+</script>
+</body>
+</html>ㅇ
