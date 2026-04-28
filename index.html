@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>JUNO TAROT — 운명의 메시지</title>
 <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
-<script src="https://js.tosspayments.com/v2/standard"></script>
 <style>
   *{box-sizing:border-box;margin:0;padding:0}
   :root{
@@ -115,11 +114,6 @@
     <p class="lede">조용히 마음 속 질문 하나를 떠올려 주세요.<br>과거 · 현재 · 미래의 카드가 길을 비춥니다.</p>
   </header>
 
-  <div class="demo-banner">
-    <strong>💡 데모 모드 안내</strong>
-    이 파일은 <strong>단일 HTML 데모</strong>입니다. 결제 위젯은 토스페이먼츠 테스트키로 동작하며 실제 청구는 일어나지 않습니다. 실서비스로 만들려면 <code style="background:rgba(0,0,0,0.3);padding:2px 6px;border-radius:4px;color:var(--gold)">juno-tarot-server</code> 폴더의 풀 버전을 호스팅(Render·Railway)에 올리시거나, 가까운 개발자에게 의뢰하세요.
-  </div>
-
   <div class="question-box">
     <label for="qInput">당신의 질문</label>
     <input id="qInput" type="text" maxlength="100" placeholder="예: 지금 이 관계, 계속 가도 될까?">
@@ -133,26 +127,7 @@
 
   <div class="reading-section" id="readings"></div>
 
-  <div class="reading-section hidden" id="premiumCta">
-    <div class="premium-cta">
-      <div class="eyebrow">✦ PREMIUM ✦</div>
-      <h3>운명의 메시지를 더 깊이 확인해보세요</h3>
-      <p>지금 보신 키워드 너머의 진짜 이야기. 카드별 풀 해석과 세 장이 엮어내는 종합 메시지를 받아보세요.</p>
-      <ul class="premium-bullets">
-        <li>78장 RWS 교본 기반 카드별 풀 해석</li>
-        <li>과거 → 현재 → 미래 흐름의 종합 메시지</li>
-        <li>역방향 카드의 깊은 의미까지</li>
-      </ul>
-      <div class="price-row">
-        <span class="price">3,900</span>
-        <span class="price-suffix">원 · 프리미엄 타로 해석</span>
-      </div>
-      <button class="btn btn-gold" id="payBtn">전체 해석 보기 →</button>
-      <div class="premium-notice">
-        디지털 콘텐츠 특성상 <strong style="color:var(--cream-soft)">전체 해석을 열람한 후에는 환불이 제한</strong>될 수 있습니다. 결제 진행 시 본 안내에 동의한 것으로 간주됩니다.
-      </div>
-    </div>
-  </div>
+  <div class="reading-section hidden" id="premiumCta"></div>
 
   <footer class="biz-footer">
     <div class="biz-grid">
@@ -171,23 +146,6 @@
     </div>
     <p class="fineprint">본 결과는 자기 성찰을 위한 참고 자료이며, 의학·법률·재정 등 전문적 판단을 대체하지 않습니다. © JUNO TAROT</p>
   </footer>
-</div>
-
-<div class="modal" id="payModal" role="dialog" aria-modal="true">
-  <div class="modal-inner">
-    <div class="modal-title">프리미엄 타로 해석 — 3,900원</div>
-    <div class="modal-sub">결제 수단을 선택하고 진행해 주세요. (테스트 모드: 실제 청구되지 않습니다)</div>
-    <div id="payment-method"></div>
-    <div id="agreement"></div>
-    <div class="modal-actions">
-      <button class="btn btn-ghost" id="cancelPayBtn">취소</button>
-      <button class="btn btn-gold" id="confirmPayBtn">3,900원 결제하기</button>
-    </div>
-    <div class="modal-fineprint">
-      Powered by TossPayments · 안전한 결제<br>
-      디지털 콘텐츠는 열람 후 환불이 제한될 수 있습니다.
-    </div>
-  </div>
 </div>
 
 <script>
@@ -305,7 +263,7 @@ function buildMinor(){
 }
 const DECK=[...MAJOR,...buildMinor()];
 
-let state={drawn:null,flipped:[false,false,false],unlocked:false};
+let state={drawn:null,flipped:[false,false,false],unlocked:true};
 const $=s=>document.querySelector(s);
 const $$=s=>Array.from(document.querySelectorAll(s));
 function imgUrl(file){return `https://commons.wikimedia.org/wiki/Special:FilePath/${encodeURIComponent(file)}?width=320`}
@@ -386,73 +344,22 @@ function showPreviews(){
 }
 
 function startDraw(){
-  state.drawn=pickThree();state.flipped=[false,false,false];state.unlocked=false;
-  $('#readings').innerHTML='';$('#premiumCta').classList.add('hidden');
+  state.drawn=pickThree();state.flipped=[false,false,false];state.unlocked=true;
+  $('#readings').innerHTML='';
   renderSlots();
   toast('카드를 한 장씩 클릭해서 뒤집어 보세요');
 }
 function reset(){
-  state={drawn:null,flipped:[false,false,false],unlocked:false};
-  $('#readings').innerHTML='';$('#premiumCta').classList.add('hidden');
+  state={drawn:null,flipped:[false,false,false],unlocked:true};
+  $('#readings').innerHTML='';
   $('#resetBtn').classList.add('hidden');$('#qInput').value='';
   renderSlots();
-  if(history.replaceState)history.replaceState({},'',location.pathname);
-}
-
-let tossWidgets=null,tossReady=false;
-async function setupToss(){
-  if(tossReady)return;
-  if(!window.TossPayments){toast('결제 모듈 로드 실패. 인터넷 연결 확인');return}
-  const tp=window.TossPayments(CONFIG.CLIENT_KEY);
-  tossWidgets=tp.widgets({customerKey:CONFIG.CUSTOMER_KEY});
-  await tossWidgets.setAmount({currency:'KRW',value:CONFIG.PRICE});
-  await Promise.all([
-    tossWidgets.renderPaymentMethods({selector:'#payment-method',variantKey:'DEFAULT'}),
-    tossWidgets.renderAgreement({selector:'#agreement',variantKey:'AGREEMENT'})
-  ]);
-  tossReady=true;
-}
-async function openPay(){
-  $('#payModal').classList.add('open');
-  try{await setupToss()}catch(e){console.error(e);toast('결제 위젯 초기화 실패')}
-}
-function closePay(){$('#payModal').classList.remove('open')}
-async function requestPayment(){
-  if(!tossReady){toast('결제 위젯 준비 중...');return}
-  const orderId='juno_'+Date.now()+'_'+Math.random().toString(36).slice(2,8);
-  try{
-    await tossWidgets.requestPayment({
-      orderId,orderName:CONFIG.PRODUCT_NAME,customerEmail:'',customerName:'',
-      successUrl:location.origin+location.pathname+'?paid=1',
-      failUrl:location.origin+location.pathname+'?paid=0'
-    });
-  } catch(e){console.error(e);toast('결제 요청 실패: '+(e.message||''))}
-}
-
-function handlePaymentReturn(){
-  const p=new URLSearchParams(location.search);
-  if(!p.has('paid'))return;
-  if(p.get('paid')==='1'){
-    state.unlocked=true;
-    if(!state.drawn)state.drawn=pickThree();
-    state.flipped=[true,true,true];
-    renderSlots();
-    setTimeout(()=>{showPreviews();toast('결제 완료! 전체 해석이 열렸습니다 ✦')},300);
-  } else {
-    toast('결제가 취소되었거나 실패했습니다');
-    if(history.replaceState)history.replaceState({},'',location.pathname);
-  }
 }
 
 $('#drawBtn').addEventListener('click',startDraw);
 $('#resetBtn').addEventListener('click',reset);
-$('#payBtn').addEventListener('click',openPay);
-$('#cancelPayBtn').addEventListener('click',closePay);
-$('#confirmPayBtn').addEventListener('click',requestPayment);
-$('#payModal').addEventListener('click',e=>{if(e.target.id==='payModal')closePay()});
 
 renderSlots();
-handlePaymentReturn();
 </script>
 </body>
 </html>
